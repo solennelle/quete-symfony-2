@@ -39,10 +39,11 @@ class BlogController extends AbstractController
     /**
      * Getting a article with a formatted slug for title
      *
-     * @param string $slug The slugger
+     * @param string $slug
      *
-     * @Route("/blog/{slug<[a-z0-9-]+>}",
+     * @Route("/blog/{$slug}";
      *     defaults={"slug" = null},
+     *     methods={"GET"},
      *     name="blog_show")
      * @return Response A response instance
      */
@@ -53,18 +54,18 @@ class BlogController extends AbstractController
                 ->createNotFoundException('No slug has been sent to find an article in article\'s table.');
         }
 
-        $slug = preg_replace(
+        $title = preg_replace(
             '/-/',
             ' ', ucwords(trim(strip_tags($slug)), "-")
         );
 
         $article = $this->getDoctrine()
             ->getRepository(Article::class)
-            ->findOneBy(['title' => mb_strtolower($slug)]);
+            ->findOneBy(['title' => mb_strtolower($title)]);
 
         if (!$article) {
             throw $this->createNotFoundException(
-                'No article with ' . $slug . ' title, found in article\'s table.'
+                'No article with ' . $title . ' title, found in article\'s table.'
             );
         }
 
@@ -72,7 +73,7 @@ class BlogController extends AbstractController
             'blog/show.html.twig',
             [
                 'article' => $article,
-                'slug' => $slug,
+                'title' => $title,
             ]
         );
     }
@@ -84,6 +85,7 @@ class BlogController extends AbstractController
      *
      * @Route("blog/category/{name<^[a-z0-9-]+$>}",
      *     defaults={"slug" = null},
+     *
      *     name="category_show")
      * @return Response A response instance
      */
@@ -106,7 +108,7 @@ class BlogController extends AbstractController
      *
      * @Route("blog/tag/{name}",
      *     defaults={"slug" = null},
-     *     requirements={"name"="[a-zA-Z0-9_\/\s.-]+"},
+     *     methods={"GET"},
      *     name="tag_show")
      * @return Response A response instance
      */
