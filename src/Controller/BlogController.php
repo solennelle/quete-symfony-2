@@ -79,22 +79,16 @@ class BlogController extends AbstractController
     /**
      * Getting a category
      *
-     * @param string $categoryName
+     * @param string $category
      *
-     * @Route("blog/category/{categoryName}",
+     * @Route("blog/category/{id<\d+>}",
      *     defaults={"slug" = null},
-     *     name="blog_category")
+     *     name="category_show")
      * @return Response A response instance
      */
-    public function showByCategory(string $categoryName): Response
+    public function showByCategory(Category $category): Response
     {
-        $category = $this->getDoctrine()
-            ->getRepository(Category::class)
-            ->findOneBy(['name' => $categoryName]);
         $articles = $category->getArticles();
-
-
-
         return $this->render(
             'blog/category.html.twig',
             [
@@ -104,3 +98,8 @@ class BlogController extends AbstractController
         );
     }
 }
+
+//Dans BlogController, la méthode showByCategory() permet de récupérer un objet Category via le param converter, à partir d'un name en paramètre de route,
+//    Dans showByCategory(), les articles associés à la categorie sont toujours récupérés par l’appel à $category->getArticles();,
+ //   La méthode rend une vue affichant le nom de la catégorie et ses articles associés.
+
