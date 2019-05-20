@@ -1,0 +1,21 @@
+{# templates/category.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block body %}
+
+    <div>
+        {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        <button class="btn">{{ button_label|default('Save') }}</button>
+        {{ form_end(form) }}
+    </div>
+
+    <a href="{{ path('app_index') }}">
+        Back to homepage.
+    </a>
+
+{% endblock %}
