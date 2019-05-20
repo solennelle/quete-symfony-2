@@ -41,9 +41,8 @@ class BlogController extends AbstractController
      *
      * @param string $slug
      *
-     * @Route("/blog/{$slug}";
+     * @Route("/blog/{slug<[a-z0-9-]+>}",
      *     defaults={"slug" = null},
-     *     methods={"GET"},
      *     name="blog_show")
      * @return Response A response instance
      */
@@ -54,18 +53,18 @@ class BlogController extends AbstractController
                 ->createNotFoundException('No slug has been sent to find an article in article\'s table.');
         }
 
-        $title = preg_replace(
+        $slug = preg_replace(
             '/-/',
             ' ', ucwords(trim(strip_tags($slug)), "-")
         );
 
         $article = $this->getDoctrine()
             ->getRepository(Article::class)
-            ->findOneBy(['title' => mb_strtolower($title)]);
+            ->findOneBy(['title' => mb_strtolower($slug)]);
 
         if (!$article) {
             throw $this->createNotFoundException(
-                'No article with ' . $title . ' title, found in article\'s table.'
+                'No article with ' . $slug . ' title, found in article\'s table.'
             );
         }
 
@@ -73,7 +72,7 @@ class BlogController extends AbstractController
             'blog/show.html.twig',
             [
                 'article' => $article,
-                'title' => $title,
+                'slug' => $slug,
             ]
         );
     }
@@ -85,7 +84,6 @@ class BlogController extends AbstractController
      *
      * @Route("blog/category/{name<^[a-z0-9-]+$>}",
      *     defaults={"slug" = null},
-     *
      *     name="category_show")
      * @return Response A response instance
      */
