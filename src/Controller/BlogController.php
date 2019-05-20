@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Entity\Category;
+use App\Entity\Tag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -40,7 +41,7 @@ class BlogController extends AbstractController
      *
      * @param string $slug The slugger
      *
-     * @Route("/blog/{slug<^[a-z0-9-]+$>}",
+     * @Route("/blog/{slug<[a-z0-9-]+>}",
      *     defaults={"slug" = null},
      *     name="blog_show")
      * @return Response A response instance
@@ -79,7 +80,7 @@ class BlogController extends AbstractController
     /**
      * Getting a category
      *
-     * @param string $category
+     * @param Category $category
      *
      * @Route("blog/category/{name<^[a-z0-9-]+$>}",
      *     defaults={"slug" = null},
@@ -97,9 +98,28 @@ class BlogController extends AbstractController
             ]
         );
     }
+
+    /**
+     * Getting a tag and associated articles
+     *
+     * @param Tag $tag
+     *
+     * @Route("blog/tag/{name}",
+     *     defaults={"slug" = null},
+     *     requirements={"name"="[a-zA-Z0-9_\/\s.-]+"},
+     *     name="tag_show")
+     * @return Response A response instance
+     */
+    public function showByTag(Tag $tag): Response
+    {
+        $articles = $tag->getArticles();
+        return $this->render(
+            'blog/tag.html.twig',
+            [
+                'articles' => $articles,
+                'tag' => $tag,
+            ]
+        );
+    }
+
 }
-
-//Dans BlogController, la méthode showByCategory() permet de récupérer un objet Category via le param converter, à partir d'un name en paramètre de route,
-//    Dans showByCategory(), les articles associés à la categorie sont toujours récupérés par l’appel à $category->getArticles();,
- //   La méthode rend une vue affichant le nom de la catégorie et ses articles associés.
-
