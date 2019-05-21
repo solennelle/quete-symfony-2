@@ -31,9 +31,7 @@ class BlogController extends AbstractController
 
         return $this->render(
             'blog/index.html.twig',
-            ['articles' => $articles,
-             'form' => $form->createView(),
-            ]
+            ['articles' => $articles]
         );
     }
 
