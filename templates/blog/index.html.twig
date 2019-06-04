@@ -6,7 +6,7 @@
 {% block body %}
     {% for article in articles %}
         <div>
-            <h2>{{ loop.index }} / {{ article.title }} - Category : {{ article.category.name }}</h2>
+            <h2>{{ loop.index }} / <a href="{{ url('blog_show', { 'slug': article.slug })}}">{{ article.title }} </a> - Category : {{ article.category.name }}</h2>
             <p>{{ article.content }}</p>
         </div>
     {% else %}

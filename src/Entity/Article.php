@@ -39,6 +39,11 @@ class Article
      */
     private $tags;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $Slug;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -109,6 +114,18 @@ class Article
             $this->tags->removeElement($tag);
             $tag->removeArticle($this);
         }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->Slug;
+    }
+
+    public function setSlug(string $Slug): self
+    {
+        $this->Slug = $Slug;
 
         return $this;
     }
