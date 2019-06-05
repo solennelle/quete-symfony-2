@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Entity\Category;
 use App\Entity\Tag;
+use App\Repository\ArticleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,15 +15,13 @@ class BlogController extends AbstractController
     /**
      * Show all row from article's entity
      *
+     * @param ArticleRepository $articleRepository
      * @Route("/blog", name="blog_index")
      * @return Response A response instance
      */
-    public function index(): Response
+    public function index(ArticleRepository $articleRepository): Response
     {
-        $articles = $this->getDoctrine()
-            ->getRepository(Article::class)
-            ->findAll();
-
+        $articles = $articleRepository->findAllWithCategories();
         if (!$articles) {
             throw $this->createNotFoundException(
                 'No article found in article\'s table.'
