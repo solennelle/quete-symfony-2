@@ -1,0 +1,6 @@
+<h1>Un nouvel article a été publié!</h1>
+<div>
+    <h2><a href="{{ url('blog_show', { 'slug': article.slug })}}">Nom de l'article : {{ article.title }}</a></h2>
+    <h3>Categorie : {{ article.category.name }}</h3>
+    <p>{{ article.content }}</p>
+</div>
