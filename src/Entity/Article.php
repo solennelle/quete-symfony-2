@@ -44,6 +44,12 @@ class Article
      */
     private $Slug;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="articles")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $author;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -126,6 +132,18 @@ class Article
     public function setSlug(string $Slug): self
     {
         $this->Slug = $Slug;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

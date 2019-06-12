@@ -41,9 +41,12 @@ class ArticleController extends AbstractController
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
 
             $article->setSlug($slugify->generate($article->getTitle()));
+            $author = $this->getUser();
+            $article->setAuthor($author);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($article);
             $entityManager->flush();
