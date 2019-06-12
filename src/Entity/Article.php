@@ -2,12 +2,17 @@
 
 namespace App\Entity;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
+ * @UniqueEntity(
+ *     "title",
+ *      message="Ce titre existe déjà")
  */
 class Article
 {
@@ -15,16 +20,23 @@ class Article
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     *
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\NotBlank(message="Le champ ne peut pas être vide")
+     * @Assert\Length(max="255", maxMessage="Le titre saisi {{ value }} est trop long, il ne devrait pas dépasser {{ limit }} caractères")
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank(message="Le champ ne peut pas être vide")
+     * @Assert\Regex("/digital/",
+     *     match=false,
+     *     message="En français, il faut dire numérique")
      */
     private $content;
 
@@ -42,7 +54,7 @@ class Article
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Slug;
+    private $slug;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="articles")
@@ -126,12 +138,12 @@ class Article
 
     public function getSlug(): ?string
     {
-        return $this->Slug;
+        return $this->slug;
     }
 
-    public function setSlug(string $Slug): self
+    public function setSlug(string $slug): self
     {
-        $this->Slug = $Slug;
+        $this->slug = $slug;
 
         return $this;
     }
