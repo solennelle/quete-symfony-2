@@ -4,8 +4,6 @@
 
 {% block body %}
     <h1>Create new Article</h1>
-
     {{ include('article/_form.html.twig') }}
-
     <a class="btn btn-secondary" href="{{ path('article_index') }}">back to list</a>
 {% endblock %}

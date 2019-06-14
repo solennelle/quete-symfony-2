@@ -8,7 +8,7 @@
 {% block body %}
 
     <div>
-        <h1>Real article s title : {{ article.title }}</h1>
+        <h1>Title : {{ article.title }}</h1>
         <h2>Category : {{ article.category.name }}</h2>
         <p>{{ article.content }}</p>
     </div>
@@ -20,7 +20,10 @@
             <li>No tags for this article</li>
         {% endfor %}
     </ul>
-    <a href="{{ path('app_index') }}">
+    {% if is_granted('ROLE_AUTHOR') %}
+        <a class="btn btn-secondary" href="{{ path('article_edit', { 'id': article.id} ) }}">Edit</a>
+    {%endif%}
+    <a class="btn btn-primary" href="{{ path('app_index') }}">
         Back to homepage.
     </a>
 

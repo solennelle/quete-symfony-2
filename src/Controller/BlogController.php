@@ -49,7 +49,7 @@ class BlogController extends AbstractController
     {
         $article = $this->getDoctrine()
             ->getRepository(Article::class)
-            ->findOneBy(['Slug' => $slug]);
+            ->findOneBy(['slug' => $slug]);
 
         if (!$article) {
             throw $this->createNotFoundException(
