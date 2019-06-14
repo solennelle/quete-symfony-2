@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 /**
  * @Route("/article")
@@ -34,6 +36,7 @@ class ArticleController extends AbstractController
      * @param \Swift_Mailer $mailer
      * @Route("/new", name="article_new", methods={"GET","POST"})
      * @return Response
+     * @IsGranted("ROLE_AUTHOR")
      */
     public function new(Request $request, Slugify $slugify, \Swift_Mailer $mailer): Response
     {
@@ -89,22 +92,25 @@ class ArticleController extends AbstractController
      * @param Slugify $slugify
      * @Route("/{id}/edit", name="article_edit", methods={"GET","POST"})
      * @return Response
-
      */
     public function edit(Request $request, Article $article, Slugify $slugify): Response
     {
-        $form = $this->createForm(ArticleType::class, $article);
-        $form->handleRequest($request);
+        $hasAccess = $this->isGranted('ROLE_ADMIN');
+        if ($this->getUser() == $article->getAuthor() || $this->getUser() == $hasAccess){
+            $form = $this->createForm(ArticleType::class, $article);
+            $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $article->setSlug($slugify->generate($article->getTitle()));
-            $this->getDoctrine()->getManager()->flush();
+            if ($form->isSubmitted() && $form->isValid()) {
+                $article->setSlug($slugify->generate($article->getTitle()));
+                $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('article_index', [
-                'id' => $article->getId(),
-            ]);
+                return $this->redirectToRoute('article_index', [
+                    'id' => $article->getId(),
+                ]);
+            }
+        } else {
+            throw new \Exception('Vous n\'êtes pas l\'auteur de cet article!');
         }
-
         return $this->render('article/edit.html.twig', [
             'article' => $article,
             'form' => $form->createView(),
