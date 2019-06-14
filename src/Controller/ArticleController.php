@@ -96,7 +96,9 @@ class ArticleController extends AbstractController
     public function edit(Request $request, Article $article, Slugify $slugify): Response
     {
         $hasAccess = $this->isGranted('ROLE_ADMIN');
-        if ($this->getUser() == $article->getAuthor() || $this->getUser() == $hasAccess){
+        if ($this->getUser() != $article->getAuthor() || $this->getUser() != $hasAccess) {
+            $this->createAccessDeniedException();
+        }
             $form = $this->createForm(ArticleType::class, $article);
             $form->handleRequest($request);
 
@@ -108,9 +110,6 @@ class ArticleController extends AbstractController
                     'id' => $article->getId(),
                 ]);
             }
-        } else {
-            $this->createAccessDeniedException();
-        }
         return $this->render('article/edit.html.twig', [
             'article' => $article,
             'form' => $form->createView(),
