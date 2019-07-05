@@ -40,9 +40,21 @@ class User implements UserInterface
      */
     private $articles;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Article")
+     */
+    private $Article;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Article")
+     */
+    private $Favorite;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
+        $this->Article = new ArrayCollection();
+        $this->Favorite = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -123,4 +135,65 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
+    /**
+     * @return Collection|Article[]
+     */
+    public function getArticle(): Collection
+    {
+        return $this->Article;
+    }
+
+    public function addArticle(Article $article): self
+    {
+        if (!$this->Article->contains($article)) {
+            $this->Article[] = $article;
+        }
+
+        return $this;
+    }
+
+    public function removeArticle(Article $article): self
+    {
+        if ($this->Article->contains($article)) {
+            $this->Article->removeElement($article);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Article[]
+     */
+    public function getFavorite(): Collection
+    {
+        return $this->Favorite;
+    }
+
+    public function addFavorite(Article $favorite): self
+    {
+        if (!$this->Favorite->contains($favorite)) {
+            $this->Favorite[] = $favorite;
+        }
+
+        return $this;
+    }
+
+
+    public function removeFavorite(Article $favorite): self
+    {
+        if ($this->Favorite->contains($favorite)) {
+            $this->Favorite->removeElement($favorite);
+        }
+
+        return $this;
+    }
+
+    public function isFavorite(Article $favorite): bool
+    {
+        if ($favorite->getId()){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

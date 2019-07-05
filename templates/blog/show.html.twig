@@ -17,6 +17,9 @@
         {% for tag in article.tags %}
             <li><a href="{{ url('tag_show', { 'name': tag.name })}}">{{ tag.name }}</a></li>
         {% else %}
+            <a href="#" onclick="addToFavorite()">
+                <i id="favorite" class="{{ app.user.isFavorite(article) ? 'fas' : 'far' }} fa-heart"></i>
+            </a>
             <li>No tags for this article</li>
         {% endfor %}
     </ul>

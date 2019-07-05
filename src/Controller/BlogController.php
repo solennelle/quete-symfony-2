@@ -62,6 +62,7 @@ class BlogController extends AbstractController
             [
                 'article' => $article,
                 'slug' => $slug,
+                'isFavorite' => $this->getUser()->isFavorite($article)
             ]
         );
     }
